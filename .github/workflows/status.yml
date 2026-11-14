@@ -2,6 +2,7 @@ name: Check and publish status
 
 on:
   schedule:
+    # GitHub may delay scheduled runs at busy times; the page warns when checks are stale.
     - cron: "*/5 * * * *"
   push:
     branches: [main]
