@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Maritime status</title>
+  <id>https://status.maritime.sh/</id>
+  <link href="https://status.maritime.sh/"/>
+  <link rel="self" href="https://status.maritime.sh/feed.xml"/>
+  <updated>2026-11-13T00:00:00Z</updated>
+</feed>

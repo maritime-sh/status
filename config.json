@@ -1,0 +1,30 @@
+{
+  "site": "https://status.maritime.sh",
+  "components": [
+    {
+      "id": "website",
+      "name": "Website and dashboard",
+      "url": "https://maritime.sh"
+    },
+    {
+      "id": "api",
+      "name": "API",
+      "url": "https://api.maritime.sh/health",
+      "expect": "\"status\":\"ok\""
+    },
+    {
+      "id": "agents",
+      "name": "Agents / computers",
+      "url": null,
+      "note": "Updated by the Maritime team during incidents"
+    },
+    {
+      "id": "mcp",
+      "name": "MCP",
+      "url": "https://mcp.maritime.sh/healthz",
+      "expect": "\"ok\":true"
+    }
+  ],
+  "slow_ms": 5000,
+  "history_days": 90
+}
