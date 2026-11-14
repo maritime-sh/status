@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pages: write
   id-token: write
 
@@ -30,7 +31,28 @@ jobs:
           ref: main
 
       - name: Run checks and rebuild incidents
+        env:
+          TRANSITIONS_FILE: ${{ runner.temp }}/transitions.tsv
         run: python3 scripts/check.py
+
+      - name: Alert the team on outages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRANSITIONS_FILE: ${{ runner.temp }}/transitions.tsv
+        run: |
+          [ -s "$TRANSITIONS_FILE" ] || exit 0
+          gh label create outage --color d64545 --description "Automatic outage alert" 2>/dev/null || true
+          while IFS=$'\t' read -r id name old new error; do
+            title="Outage: $name ($id)"
+            open=$(gh issue list --label outage --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+            if [ "$new" = "outage" ] && [ -z "$open" ]; then
+              gh issue create --label outage --title "$title" --body "Automatic check: **$name** went from $old to outage at $(date -u +%H:%MZ) ($error).
+
+          @mariagorskikh @aryshriv @bli0428 please confirm, and if customers are affected post an incident (incidents/_template.md) and email them. This issue closes itself when the check recovers."
+            elif [ "$old" = "outage" ] && [ -n "$open" ]; then
+              gh issue close "$open" --comment "Automatic check: $name is $new again at $(date -u +%H:%MZ)."
+            fi
+          done < "$TRANSITIONS_FILE"
 
       - name: Commit results
         run: |

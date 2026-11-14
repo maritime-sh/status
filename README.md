@@ -24,6 +24,18 @@ It lives on GitHub on purpose: it must stay up when Maritime's own infrastructur
 
 A response slower than 5 s counts as degraded.
 
+## Alerts and scheduling
+
+- When a check goes to outage, the workflow opens a GitHub issue labelled `outage` that
+  mentions Maria, Ary and Brandon (GitHub emails them). It closes itself on recovery.
+  The issue is for the team; customers only see what is posted in `incidents/`.
+- GitHub's own cron can run late or not at all, so `.github/workflows/heartbeat.yml` is a
+  backup: one job starts the check every 5 minutes for about 5.5 hours, then starts a fresh
+  copy of itself. Its hourly schedule restarts the chain if it ever stops. Public repos have
+  free Actions minutes, so this costs nothing.
+- If the page says checks have not run for 45 minutes, start one by hand:
+  Actions, "Check and publish status", Run workflow (or `gh workflow run status.yml -R maritime-sh/status`).
+
 ## Posting an incident
 
 1. Copy `incidents/_template.md` to `incidents/YYYY-MM-DD-short-name.md`.

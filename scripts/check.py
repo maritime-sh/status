@@ -7,6 +7,7 @@ Standard library only. Run from the repo root:
 """
 import html
 import json
+import os
 import re
 import sys
 import time
@@ -71,6 +72,7 @@ def run_checks(state):
     for comp in CONFIG["components"]:
         if not comp.get("url"):
             continue
+        previous = state["checks"].get(comp["id"], {}).get("status")
         ok, code, latency, error = check(comp)
         if ok and latency > CONFIG["slow_ms"]:
             measured = "degraded"
@@ -83,6 +85,8 @@ def run_checks(state):
             "error": error,
             "checked_at": iso(now_utc()),
         }
+        if previous and previous != measured:
+            record_transition(comp, previous, measured, error)
         days = state["daily"].setdefault(comp["id"], {})
         up, total = days.get(today, [0, 0])
         days[today] = [up + (1 if ok else 0), total + 1]
@@ -90,6 +94,15 @@ def run_checks(state):
             del days[day]
         print(f"{comp['id']}: {measured} code={code} {latency}ms {error or ''}")
     state["last_run"] = iso(now_utc())
+
+
+def record_transition(comp, previous, current, error):
+    """Append 'id<TAB>name<TAB>old<TAB>new<TAB>error' for the workflow's alert step."""
+    path = os.environ.get("TRANSITIONS_FILE")
+    if not path:
+        return
+    with open(path, "a") as f:
+        f.write("\t".join([comp["id"], comp["name"], previous, current, error or ""]) + "\n")
 
 
 def md_inline(text):

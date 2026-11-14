@@ -1,0 +1,37 @@
+name: Heartbeat
+
+# Backup for GitHub's cron, which can be delayed or skipped. One long job starts
+# the status check every 5 minutes for about 5.5 hours, then starts a fresh copy
+# of itself. workflow_dispatch is one of the few events a GITHUB_TOKEN may trigger.
+# The hourly schedule restarts the chain if it ever breaks.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  actions: write
+
+concurrency:
+  group: heartbeat
+  cancel-in-progress: false
+
+jobs:
+  beat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Start the status check every 5 minutes
+        run: |
+          for i in $(seq 1 66); do
+            gh workflow run status.yml --ref main || echo "dispatch failed, retrying next beat"
+            sleep 300
+          done
+
+      - name: Hand over to a fresh heartbeat
+        if: always()
+        run: gh workflow run heartbeat.yml --ref main
