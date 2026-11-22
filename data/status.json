@@ -1,24 +1,24 @@
 {
   "checks": {
     "api": {
-      "checked_at": "2026-11-22T08:15:11Z",
+      "checked_at": "2026-11-22T08:20:13Z",
       "code": 200,
       "error": null,
-      "latency_ms": 519,
+      "latency_ms": 30,
       "status": "operational"
     },
     "mcp": {
-      "checked_at": "2026-11-22T08:15:11Z",
+      "checked_at": "2026-11-22T08:20:13Z",
       "code": 200,
       "error": null,
-      "latency_ms": 216,
+      "latency_ms": 261,
       "status": "operational"
     },
     "website": {
-      "checked_at": "2026-11-22T08:15:11Z",
+      "checked_at": "2026-11-22T08:20:13Z",
       "code": 200,
       "error": null,
-      "latency_ms": 217,
+      "latency_ms": 43,
       "status": "operational"
     }
   },
@@ -57,8 +57,8 @@
         290
       ],
       "2026-11-22": [
-        100,
-        100
+        101,
+        101
       ]
     },
     "mcp": {
@@ -95,8 +95,8 @@
         290
       ],
       "2026-11-22": [
-        100,
-        100
+        101,
+        101
       ]
     },
     "website": {
@@ -133,10 +133,10 @@
         290
       ],
       "2026-11-22": [
-        100,
-        100
+        101,
+        101
       ]
     }
   },
-  "last_run": "2026-11-22T08:15:11Z"
+  "last_run": "2026-11-22T08:20:13Z"
 }
